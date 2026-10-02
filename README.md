@@ -3,7 +3,7 @@
 
 # Cloud Accounts
 
-This repository contains OpenTofu/Terraform modules for managing [Cloud Accounts](https://developer.humanitec.com/platform-orchestrator/docs/platform-orchestrator/security/cloud-accounts/overview/) in the [Humanitec Platform Orchestrator](https://developer.humanitec.com/platform-orchestrator/).
+This repository contains a OpenTofu/Terraform module for managing Cloud Accounts of type [AWS Role Assumption with Web Identity](https://developer.humanitec.com/platform-orchestrator/docs/platform-orchestrator/security/cloud-accounts/overview/) in the [Humanitec Platform Orchestrator](https://developer.humanitec.com/platform-orchestrator/).
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
