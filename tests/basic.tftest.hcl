@@ -10,9 +10,8 @@ provider "aws" {
   secret_key                  = "mock_secret_key"
 }
 
-provider "humanitec" {
-  org_id = "my-org"
-}
+# Mocked so the tests need no Humanitec API token
+mock_provider "humanitec" {}
 
 run "test_existing_oidc_provider" {
   command = plan
