@@ -11,7 +11,7 @@ variable "cloud_account_id" {
 }
 variable "cloud_account_name" {
   type        = string
-  description = "Name for the Cloud Account. If not set, will be set to the value of cloud_account_id"
+  description = "Name for the Cloud Account. If not set, will be set to the value of `cloud_account_id`"
   nullable    = true
   default     = null
 }
@@ -22,7 +22,7 @@ variable "oidc_audience" {
 }
 variable "oidc_provider_arn" {
   type        = string
-  description = "ARN of the existing OIDC provider for Humanitec. If not set, the module generates one as a convenience but doing so is not recommended for production use as the provider will be bound to this specific Cloud Account lifecycle. The convenience provider uses the value of 'oidc_audience' as its client ID list."
+  description = "ARN of the existing OIDC provider for Humanitec. If not set, the module generates one as a convenience but doing so is not recommended for production use as the provider will be bound to this specific Cloud Account lifecycle. The convenience provider uses the value of `oidc_audience` as its client ID list."
   nullable    = true
   default     = null
 }
@@ -34,7 +34,7 @@ variable "iam_role_name" {
 }
 variable "sts_region" {
   type        = string
-  description = "Humanitec uses the regional STS endpoint sts.us-east-1.amazonaws.com by default. To use the endpoint in a different region, set this variable"
+  description = "Humanitec uses the regional STS endpoint `sts.us-east-1.amazonaws.com` by default. To use the endpoint in a different region, set this variable"
   nullable    = true
   default     = null
 }
