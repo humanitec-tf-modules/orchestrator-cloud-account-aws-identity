@@ -1,7 +1,4 @@
-> [!NOTE]
-> 🚧 The content of this repository is currently being curated. Please do not use before the first release has been cut.
-
-# Cloud Accounts
+# Cloud Accounts of type AWS Role Assumption with Web Identity
 
 This repository contains a OpenTofu/Terraform module for managing Cloud Accounts of type [AWS Role Assumption with Web Identity](https://developer.humanitec.com/platform-orchestrator/docs/platform-orchestrator/security/cloud-accounts/overview/) in the [Humanitec Platform Orchestrator](https://developer.humanitec.com/platform-orchestrator/).
 
