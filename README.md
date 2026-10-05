@@ -7,22 +7,64 @@ This repository contains a OpenTofu/Terraform module for managing Cloud Accounts
 
 ## Usage
 
-TODO - add usage examples
+The module always creates the Orchestrator Cloud Account. It provides flexibility as to which AWS objects to create or to pass in if you prefer to manage them outside of the module.
 
-- Include using your own role and setting the trust policy:
+### Create IAM role, use existing OIDC provider
 
 ```hcl
+resource "aws_iam_openid_connect_provider" "humanitec_oidc" {
+  url            = "https://idtoken.humanitec.io"
+  client_id_list = ["sts.amazonaws.com"]
+}
+
+module "cloud_account_aws_identity" {
+  source = "github.com/humanitec-tf-modules/orchestrator-cloud-account-aws-identity?ref=vX.Y.Z"
+
+  # Recommended: explicitly pass in the provider configurations
+  providers = {
+    humanitec = humanitec
+    aws       = aws
+  }
+
+  humanitec_org_id   = "my-org"
+  cloud_account_id   = "my-aws-identity-account"
+  cloud_account_name = "My AWS identity account"
+  oidc_provider_arn  = "arn:aws:iam::123456789012:oidc-provider/idtoken.humanitec.io"
+  iam_role_name      = "humanitec-access-eks-aws-identity"
+}
+```
+
+### Create IAM role and OIDC provider
+
+```hcl
+  humanitec_org_id   = "my-org"
+  cloud_account_id   = "my-aws-identity-account"
+  cloud_account_name = "My AWS identity account"
+  iam_role_name      = "humanitec-access-eks-aws-identity"
+```
+
+### Create IAM role and OIDC provider, let module generate names
+
+```hcl
+  humanitec_org_id = "my-org"
+```
+
+### Bring existing role and OIDC provider
+
+```hcl
+# Attach the required trust policy to the role
+# Make sure to merge with other trust policies on the role if present
 resource "aws_iam_role" "mine" {
   name               = "my-own-role"
   assume_role_policy = module.cloud_account.iam_role_trust_policy
 }
 
-module "cloud_account" {
+module "cloud_account_aws_identity" {
+  source = "github.com/humanitec-tf-modules/orchestrator-cloud-account-aws-identity?ref=vX.Y.Z"
   # ...
   iam_role_create = false
-  iam_role_arn    = aws_iam_role.mine.arn
+  iam_role_arn    = "arn:aws:iam::123456789012:role/my-aws-identity-role"
 }
-
 ```
 
 <!-- BEGIN_TF_DOCS -->
