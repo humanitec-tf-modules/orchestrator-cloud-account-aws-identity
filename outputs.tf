@@ -3,7 +3,7 @@ output "iam_role_arn" {
   description = "ARN of the IAM role assumed by the Cloud Account"
 }
 output "iam_role_name" {
-  value       = var.iam_role_create ? aws_iam_role.cloud_account_role[0].name : data.aws_iam_role.existing[0].name
+  value       = var.iam_role_create ? aws_iam_role.cloud_account_role[0].name : regex("[^/]+$", var.iam_role_arn)
   description = "Name of the IAM role assumed by the Cloud Account"
 }
 output "cloud_account_id" {

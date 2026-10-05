@@ -69,7 +69,38 @@ run "test_custom_oidc_audience_existing_oidc_provider" {
   }
 }
 
-run "test_existing_iam_role_requires_name" {
+run "test_existing_iam_role" {
+  command = plan
+
+  variables {
+    humanitec_org_id = "my-org"
+    cloud_account_id = "my-cloud-account"
+    iam_role_create  = false
+    iam_role_arn     = "arn:aws:iam::123456789012:role/my-path/my-existing-role"
+  }
+
+  assert {
+    condition     = length(aws_iam_role.cloud_account_role) == 0
+    error_message = "The module must not create an IAM role if iam_role_create is false"
+  }
+
+  assert {
+    condition     = jsondecode(humanitec_resource_account.aws_identity.credentials).aws_identity_role_arn == var.iam_role_arn
+    error_message = "The Cloud Account credentials must contain the ARN of the existing IAM role"
+  }
+
+  assert {
+    condition     = output.iam_role_arn == var.iam_role_arn
+    error_message = "The iam_role_arn output must equal the iam_role_arn variable"
+  }
+
+  assert {
+    condition     = output.iam_role_name == "my-existing-role"
+    error_message = "The iam_role_name output must be the role name taken from iam_role_arn"
+  }
+}
+
+run "test_existing_iam_role_requires_arn" {
   command = plan
 
   variables {
@@ -78,6 +109,48 @@ run "test_existing_iam_role_requires_name" {
   }
 
   expect_failures = [
-    var.iam_role_create,
+    var.iam_role_arn,
+  ]
+}
+
+run "test_existing_iam_role_rejects_name" {
+  command = plan
+
+  variables {
+    humanitec_org_id = "my-org"
+    iam_role_create  = false
+    iam_role_name    = "my-existing-role"
+    iam_role_arn     = "arn:aws:iam::123456789012:role/my-existing-role"
+  }
+
+  expect_failures = [
+    var.iam_role_name,
+  ]
+}
+
+run "test_new_iam_role_rejects_arn" {
+  command = plan
+
+  variables {
+    humanitec_org_id = "my-org"
+    iam_role_arn     = "arn:aws:iam::123456789012:role/my-existing-role"
+  }
+
+  expect_failures = [
+    var.iam_role_arn,
+  ]
+}
+
+run "test_invalid_iam_role_arn" {
+  command = plan
+
+  variables {
+    humanitec_org_id = "my-org"
+    iam_role_create  = false
+    iam_role_arn     = "my-existing-role"
+  }
+
+  expect_failures = [
+    var.iam_role_arn,
   ]
 }

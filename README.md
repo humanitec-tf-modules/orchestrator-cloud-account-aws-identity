@@ -5,6 +5,26 @@
 
 This repository contains a OpenTofu/Terraform module for managing Cloud Accounts of type [AWS Role Assumption with Web Identity](https://developer.humanitec.com/platform-orchestrator/docs/platform-orchestrator/security/cloud-accounts/overview/) in the [Humanitec Platform Orchestrator](https://developer.humanitec.com/platform-orchestrator/).
 
+## Usage
+
+TODO - add usage examples
+
+- Include using your own role and setting the trust policy:
+
+```hcl
+resource "aws_iam_role" "mine" {
+  name               = "my-own-role"
+  assume_role_policy = module.cloud_account.iam_role_trust_policy
+}
+
+module "cloud_account" {
+  # ...
+  iam_role_create = false
+  iam_role_arn    = aws_iam_role.mine.arn
+}
+
+```
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

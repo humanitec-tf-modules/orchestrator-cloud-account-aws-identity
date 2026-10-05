@@ -28,20 +28,37 @@ variable "oidc_provider_arn" {
 }
 variable "iam_role_create" {
   type        = bool
-  description = "Whether to create the IAM role assumed via the Cloud Account. If `false`, `iam_role_name` must be the name of an existing role. The module does not manage the trust policy of an existing role. Use the `iam_role_trust_policy` output to configure it yourself"
+  description = "Whether to create the IAM role assumed via the Cloud Account. If `false`, `iam_role_arn` must be the ARN of an existing role. The module does not manage the trust policy of an existing role. Use the `iam_role_trust_policy` output to configure it yourself"
   nullable    = false
   default     = true
 
-  validation {
-    condition     = var.iam_role_create || var.iam_role_name != null
-    error_message = "iam_role_name must be set if iam_role_create is false"
-  }
 }
 variable "iam_role_name" {
   type        = string
-  description = "The name for the IAM role assumed via the Cloud Account. If `iam_role_create` is `true` and this is not set, the module generates a name including the cloud account id. If `iam_role_create` is `false`, the name of the existing role"
+  description = "The name for the IAM role created by the module. If not set, the module generates a name including the cloud account id. Only used if `iam_role_create` is `true`"
   nullable    = true
   default     = null
+
+  validation {
+    condition     = var.iam_role_create || var.iam_role_name == null
+    error_message = "iam_role_name must not be set if iam_role_create is false. Use iam_role_arn to pass in an existing role"
+  }
+}
+variable "iam_role_arn" {
+  type        = string
+  description = "The ARN of an existing IAM role assumed via the Cloud Account. Required if `iam_role_create` is `false`, must not be set otherwise"
+  nullable    = true
+  default     = null
+
+  validation {
+    condition     = var.iam_role_create ? var.iam_role_arn == null : var.iam_role_arn != null
+    error_message = "iam_role_arn must be set if iam_role_create is false, and must not be set otherwise"
+  }
+
+  validation {
+    condition     = var.iam_role_arn == null || can(regex("^arn:aws[a-z-]*:iam::[0-9]{12}:role/", var.iam_role_arn))
+    error_message = "iam_role_arn must be an IAM role ARN like arn:aws:iam::123456789012:role/my-role"
+  }
 }
 variable "sts_region" {
   type        = string

@@ -10,12 +10,6 @@ mock_provider "aws" {
       json = "{}"
     }
   }
-
-  mock_data "aws_iam_role" {
-    defaults = {
-      arn = "arn:aws:iam::123456789012:role/my-existing-role"
-    }
-  }
 }
 
 mock_provider "humanitec" {}
@@ -72,35 +66,5 @@ run "test_custom_oidc_audience" {
   assert {
     condition     = jsondecode(humanitec_resource_account.aws_identity.credentials).aws_identity_role_arn == aws_iam_role.cloud_account_role[0].arn
     error_message = "The Cloud Account credentials must contain the ARN of the IAM role"
-  }
-}
-
-run "test_existing_iam_role" {
-  command = apply
-
-  variables {
-    humanitec_org_id = "my-org"
-    iam_role_create  = false
-    iam_role_name    = "my-existing-role"
-  }
-
-  assert {
-    condition     = length(aws_iam_role.cloud_account_role) == 0
-    error_message = "The module must not create an IAM role if iam_role_create is false"
-  }
-
-  assert {
-    condition     = data.aws_iam_role.existing[0].name == var.iam_role_name
-    error_message = "The module must look up the existing IAM role by iam_role_name"
-  }
-
-  assert {
-    condition     = jsondecode(humanitec_resource_account.aws_identity.credentials).aws_identity_role_arn == "arn:aws:iam::123456789012:role/my-existing-role"
-    error_message = "The Cloud Account credentials must contain the ARN of the existing IAM role"
-  }
-
-  assert {
-    condition     = output.iam_role_arn == "arn:aws:iam::123456789012:role/my-existing-role"
-    error_message = "The iam_role_arn output must be the ARN of the existing IAM role"
   }
 }

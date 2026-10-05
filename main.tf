@@ -9,7 +9,7 @@ locals {
   cloud_account_id   = var.cloud_account_id != null ? var.cloud_account_id : "aws-identity-${random_string.cloud_account_id_suffix[0].result}"
   cloud_account_name = var.cloud_account_name != null ? var.cloud_account_name : local.cloud_account_id
   iam_role_name      = var.iam_role_name != null ? var.iam_role_name : "humanitec-${local.cloud_account_id}"
-  iam_role_arn       = var.iam_role_create ? aws_iam_role.cloud_account_role[0].arn : data.aws_iam_role.existing[0].arn
+  iam_role_arn       = var.iam_role_create ? aws_iam_role.cloud_account_role[0].arn : var.iam_role_arn
   oidc_provider_arn  = var.oidc_provider_arn != null ? var.oidc_provider_arn : aws_iam_openid_connect_provider.humanitec_oidc[0].arn
 }
 
@@ -50,12 +50,6 @@ resource "aws_iam_role" "cloud_account_role" {
   count              = var.iam_role_create ? 1 : 0
   name               = local.iam_role_name
   assume_role_policy = data.aws_iam_policy_document.oidc_provider_policy.json
-}
-
-# Existing IAM role passed in by name
-data "aws_iam_role" "existing" {
-  count = var.iam_role_create ? 0 : 1
-  name  = var.iam_role_name
 }
 
 # Orchestrator Cloud Account
