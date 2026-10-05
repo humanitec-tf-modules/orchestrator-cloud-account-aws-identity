@@ -6,6 +6,7 @@ resource "random_string" "cloud_account_id_suffix" {
 }
 
 locals {
+  cloud_account_type = "aws-identity"
   cloud_account_id   = var.cloud_account_id != null ? var.cloud_account_id : "aws-identity-${random_string.cloud_account_id_suffix[0].result}"
   cloud_account_name = var.cloud_account_name != null ? var.cloud_account_name : local.cloud_account_id
   iam_role_name      = var.iam_role_name != null ? var.iam_role_name : "humanitec-${local.cloud_account_id}"
@@ -13,7 +14,7 @@ locals {
   oidc_provider_arn  = var.oidc_provider_arn != null ? var.oidc_provider_arn : aws_iam_openid_connect_provider.humanitec_oidc[0].arn
 }
 
-# Convenience creation of the OIDC provider if none is passed in
+# OIDC provider for role assumption. Create only if requested
 resource "aws_iam_openid_connect_provider" "humanitec_oidc" {
   count = var.oidc_provider_arn == null ? 1 : 0
   url   = "https://idtoken.humanitec.io"
@@ -45,7 +46,7 @@ data "aws_iam_policy_document" "oidc_provider_policy" {
   }
 }
 
-# IAM role to assume
+# IAM role to assume. Create only if requested
 resource "aws_iam_role" "cloud_account_role" {
   count              = var.iam_role_create ? 1 : 0
   name               = local.iam_role_name
@@ -56,7 +57,7 @@ resource "aws_iam_role" "cloud_account_role" {
 resource "humanitec_resource_account" "aws_identity" {
   id   = local.cloud_account_id
   name = local.cloud_account_name
-  type = "aws-identity"
+  type = local.cloud_account_type
   credentials = jsonencode(merge(
     { aws_identity_role_arn = local.iam_role_arn },
     var.sts_region != null ? { sts_region = var.sts_region } : {},
