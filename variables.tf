@@ -26,9 +26,20 @@ variable "oidc_provider_arn" {
   nullable    = true
   default     = null
 }
+variable "iam_role_create" {
+  type        = bool
+  description = "Whether to create the IAM role assumed via the Cloud Account. If `false`, `iam_role_name` must be the name of an existing role. The module does not manage the trust policy of an existing role. Use the `iam_role_trust_policy` output to configure it yourself"
+  nullable    = false
+  default     = true
+
+  validation {
+    condition     = var.iam_role_create || var.iam_role_name != null
+    error_message = "iam_role_name must be set if iam_role_create is false"
+  }
+}
 variable "iam_role_name" {
   type        = string
-  description = "The name for the IAM role asssumed via the Cloud Account. If not set, the module generates a name including the cloud account id"
+  description = "The name for the IAM role assumed via the Cloud Account. If `iam_role_create` is `true` and this is not set, the module generates a name including the cloud account id. If `iam_role_create` is `false`, the name of the existing role"
   nullable    = true
   default     = null
 }

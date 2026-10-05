@@ -68,3 +68,16 @@ run "test_custom_oidc_audience_existing_oidc_provider" {
     error_message = "The IAM role trust policy must require oidc_audience as the token audience"
   }
 }
+
+run "test_existing_iam_role_requires_name" {
+  command = plan
+
+  variables {
+    humanitec_org_id = "my-org"
+    iam_role_create  = false
+  }
+
+  expect_failures = [
+    var.iam_role_create,
+  ]
+}
