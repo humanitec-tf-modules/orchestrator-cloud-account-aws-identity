@@ -53,7 +53,7 @@ module "cloud_account_aws_identity" {
 # Make sure to merge with other trust policies on the role if present
 resource "aws_iam_role" "mine" {
   name               = "my-own-role"
-  assume_role_policy = module.cloud_account.iam_role_trust_policy
+  assume_role_policy = module.cloud_account_aws_identity.iam_role_trust_policy
 }
 
 module "cloud_account_aws_identity" {
