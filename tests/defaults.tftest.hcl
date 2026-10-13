@@ -64,6 +64,11 @@ run "test_custom_oidc_audience" {
   }
 
   assert {
+    condition     = !contains(keys(jsondecode(humanitec_resource_account.aws_identity.credentials)), "sts_region")
+    error_message = "The Cloud Account credentials must not contain sts_region if sts_region is not set"
+  }
+
+  assert {
     condition     = jsondecode(humanitec_resource_account.aws_identity.credentials).aws_identity_role_arn == aws_iam_role.cloud_account_role[0].arn
     error_message = "The Cloud Account credentials must contain the ARN of the IAM role"
   }
