@@ -34,16 +34,34 @@ module "cloud_account_aws_identity" {
 ### Create IAM role and OIDC provider
 
 ```hcl
+module "cloud_account_aws_identity" {
+  source = "github.com/humanitec-tf-modules/orchestrator-cloud-account-aws-identity?ref=vX.Y.Z"
+
+  providers = {
+    humanitec = humanitec
+    aws       = aws
+  }
+
   humanitec_org_id   = "my-org"
   cloud_account_id   = "my-aws-identity-account"
   cloud_account_name = "My AWS identity account"
   iam_role_name      = "humanitec-access-eks-aws-identity"
+}
 ```
 
 ### Create IAM role and OIDC provider, let module generate names
 
 ```hcl
+module "cloud_account_aws_identity" {
+  source = "github.com/humanitec-tf-modules/orchestrator-cloud-account-aws-identity?ref=vX.Y.Z"
+
+  providers = {
+    humanitec = humanitec
+    aws       = aws
+  }
+
   humanitec_org_id = "my-org"
+}
 ```
 
 ### Bring existing role and OIDC provider
@@ -58,9 +76,15 @@ resource "aws_iam_role" "mine" {
 
 module "cloud_account_aws_identity" {
   source = "github.com/humanitec-tf-modules/orchestrator-cloud-account-aws-identity?ref=vX.Y.Z"
-  # ...
-  iam_role_create = false
-  iam_role_arn    = aws_iam_role.mine.arn
+
+  providers = {
+    humanitec = humanitec
+    aws       = aws
+  }
+
+  humanitec_org_id = "my-org"
+  iam_role_create  = false
+  iam_role_arn     = aws_iam_role.mine.arn
 }
 ```
 
