@@ -43,6 +43,11 @@ variable "iam_role_name" {
     condition     = var.iam_role_create || var.iam_role_name == null
     error_message = "iam_role_name must not be set if iam_role_create is false. Use iam_role_arn to pass in an existing role"
   }
+
+  validation {
+    condition     = var.iam_role_name == null ? true : length(var.iam_role_name) <= 64
+    error_message = "iam_role_name must not be longer than 64 characters"
+  }
 }
 variable "iam_role_arn" {
   type        = string

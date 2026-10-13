@@ -9,7 +9,7 @@ locals {
   cloud_account_type = "aws-identity"
   cloud_account_id   = var.cloud_account_id != null ? var.cloud_account_id : "aws-identity-${random_string.cloud_account_id_suffix[0].result}"
   cloud_account_name = var.cloud_account_name != null ? var.cloud_account_name : local.cloud_account_id
-  iam_role_name      = var.iam_role_name != null ? var.iam_role_name : "humanitec-${local.cloud_account_id}"
+  iam_role_name      = var.iam_role_name != null ? var.iam_role_name : substr("humanitec-${local.cloud_account_id}", 0, 64)
   iam_role_arn       = var.iam_role_create ? aws_iam_role.cloud_account_role[0].arn : var.iam_role_arn
   oidc_provider_arn  = var.oidc_provider_arn != null ? var.oidc_provider_arn : aws_iam_openid_connect_provider.humanitec_oidc[0].arn
 }
