@@ -60,7 +60,7 @@ module "cloud_account_aws_identity" {
   source = "github.com/humanitec-tf-modules/orchestrator-cloud-account-aws-identity?ref=vX.Y.Z"
   # ...
   iam_role_create = false
-  iam_role_arn    = "arn:aws:iam::123456789012:role/my-aws-identity-role"
+  iam_role_arn    = aws_iam_role.mine.arn
 }
 ```
 
