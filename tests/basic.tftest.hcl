@@ -154,3 +154,29 @@ run "test_invalid_iam_role_arn" {
     var.iam_role_arn,
   ]
 }
+
+run "test_cloud_account_id_too_long" {
+  command = plan
+
+  variables {
+    humanitec_org_id = "my-org"
+    cloud_account_id = "a123456789-123456789-123456789-123456789-123456789-123456789-123"
+  }
+
+  expect_failures = [
+    var.cloud_account_id,
+  ]
+}
+
+run "test_invalid_cloud_account_id" {
+  command = plan
+
+  variables {
+    humanitec_org_id = "my-org"
+    cloud_account_id = "My_Cloud--Account"
+  }
+
+  expect_failures = [
+    var.cloud_account_id,
+  ]
+}
