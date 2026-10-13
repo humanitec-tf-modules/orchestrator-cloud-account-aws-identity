@@ -59,8 +59,10 @@ resource "humanitec_resource_account" "aws_identity" {
   name = local.cloud_account_name
   type = local.cloud_account_type
   credentials = jsonencode(merge(
-    { aws_identity_role_arn = local.iam_role_arn },
-    var.sts_region != null ? { sts_region = var.sts_region } : {},
-    var.oidc_audience != null ? { aws_identity_audience = var.oidc_audience } : {}
+    {
+      aws_identity_role_arn = local.iam_role_arn
+      aws_identity_audience = var.oidc_audience
+    },
+    var.sts_region != null ? { sts_region = var.sts_region } : {}
   ))
 }

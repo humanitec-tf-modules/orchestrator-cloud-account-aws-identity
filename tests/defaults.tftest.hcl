@@ -73,3 +73,22 @@ run "test_custom_oidc_audience" {
     error_message = "The Cloud Account credentials must contain the ARN of the IAM role"
   }
 }
+
+run "test_null_oidc_audience" {
+  command = apply
+
+  variables {
+    humanitec_org_id = "my-org"
+    oidc_audience    = null
+  }
+
+  assert {
+    condition     = jsondecode(humanitec_resource_account.aws_identity.credentials).aws_identity_audience == "sts.amazonaws.com"
+    error_message = "A null oidc_audience must fall back to the default for aws_identity_audience"
+  }
+
+  assert {
+    condition     = aws_iam_openid_connect_provider.humanitec_oidc[0].client_id_list == toset(["sts.amazonaws.com"])
+    error_message = "A null oidc_audience must fall back to the default for the OIDC provider client ID list"
+  }
+}

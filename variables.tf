@@ -18,6 +18,7 @@ variable "cloud_account_name" {
 variable "oidc_audience" {
   type        = string
   description = "The OIDC audience for the role policy. If you have registered a custom audience on the IAM OIDC Identity Provider, override the default value of this variable"
+  nullable    = false
   default     = "sts.amazonaws.com"
 }
 variable "oidc_provider_arn" {
