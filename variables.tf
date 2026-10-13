@@ -5,7 +5,7 @@ variable "humanitec_org_id" {
 }
 variable "cloud_account_id" {
   type        = string
-  description = "ID for the Cloud Account. If not set, the module generates an ID with a random suffix"
+  description = "ID for the Cloud Account. Must be 2–63 chars, only lowercase letters, digits and single hyphens, no leading/trailing hyphen. If not set, the module generates an ID with a random suffix"
   nullable    = true
   default     = null
 
